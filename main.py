@@ -10,7 +10,7 @@ class QLabelBuddy(QDialog):
 
    def initUI(self):
       self.setWindowTitle("Проектировачный расчет цепных передач")
-      self.setFixedWidth(700)
+      self.setFixedWidth(500)
       self.label1 = QLabel('&a`', self)
       self.label2 = QLabel('&N ', self)
       self.label3 = QLabel('&z2', self)
@@ -72,6 +72,11 @@ class QLabelBuddy(QDialog):
 
       self.output = QLabel("Ответ:")
       mainLayout.addWidget(self.output, 6, 2)
+      self.label71 = QLabel('шаг цепи t =', self)
+      self.label72 = QLabel('число зубьев ведущей звёздочки z1 = ', self)
+      mainLayout.addWidget(self.label71, 7, 0)
+      mainLayout.addWidget(self.label72, 7, 2)
+
    def buton(self):
       if self.label11.text() == '' and self.label21.text() == '' and self.label31.text() == '' and self.label41.text() == '' and self.label51.text() == '' and self.label61.text() == '':
          self.btn.setEnabled(True)
@@ -129,7 +134,11 @@ class QLabelBuddy(QDialog):
       self.tp = float(self.LineEdit6.text())
 
       self.t = T(self.delta_a, self.n, self.n1, self.j)
+      self.label71 = QLabel(f' {self.t}', self)
       self.z1 = Z1(self.n1,self.t)
+      self.label72 = QLabel(f'{self.z1}', self)
+      self.mainLayout.addWidget(self.output, 7, 1)
+      self.mainLayout.addWidget(self.output, 7, 3)
       self.a = a(lamb(zc(self.delta_a, self.tp, self.z1, self.z2), self.z1, self.z2, self.t), delta(self.z2, self.z1, self.t))
       self.output.setText(f'Ответ: {self.a}')
 
@@ -141,9 +150,9 @@ Km = lambda j: 1 if j==1 else 1.7 if j==2 else 2.5 if j==3 else 3
 
 def T(delta_a,N,n1,j):
    min_t = 30.5*(N*Ky_v(n1)/(n1*Km(j)))**(1/3)
-   minim = i if((i:=delta_a/80) < min_t) else min_t
+   minim = i if((i:=delta_a/80) > min_t) else min_t
    for x in [12.7,15.875,19.05,25.4,31.75,38.1,44.45,50.8]:
-      if minim < x < delta_a/80:
+      if minim < x < delta_a/30:
          return x
    time.sleep(1000)#нет подходящего числа среди госта
 
